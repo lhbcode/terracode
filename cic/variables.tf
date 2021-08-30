@@ -9,8 +9,9 @@ locals {
   root_volume_size = 20                               # 디스크 사이즈 입니다.
   name             = "sk-test-infra"                            # 각 리소스에 붙일 이름입니다.
   cidr             = "10.98.0.0/16"                   # VPC생성시 사용할 네트워크 대역입니다.
-  public_subnet           = ["10.98.1.0/24","10.98.2.0/24"] # 서브넷 대역 입니다. 위 cidr에 종속 적입니다.
-  private_subnet           = ["10.98.3.0/24", "10.98.4.0/24"] # 서브넷 대역 입니다. 위 cidr에 종속 적입니다.
+  public_subnet            = ["10.98.1.0/24","10.98.2.0/24"] # 서브넷 대역 입니다. 위 cidr에 종속 적입니다.
+  private_subnet           = ["10.98.3.0/24", "10.98.4.0/24","10.98.5.0/24"] # 서브넷 대역 입니다. 위 cidr에 종속 적입니다.
+  database_subnets         = ["10.98.7.0/24", "10.98.8.0/24"]
   keyname_rsa      = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7q3/zaue8esoxgX0rSx0M+qT7QqDcDcX5ewUtew5KkEI8vJ5V9XlLsUAI+hWAmOUXJGRZPwxCFOXxDi+9xPBnNVWuFa4gDNDS8wuWp4IVnlj59PFD1hXSOyekdGy2kae/BY3A0+kRchWT4nHmUXeCgcYFWsw04Q76ZNF7UI2tMO6Y6LlEO/KPxY9MbFSpLBouvKeQPXWYjzeLeIKnLXosZD07s17GLm6duc0R7qeRtgw+IJr1xPbwcZVurkH/0vIWEvN8nZ0Es29SVSTJJx1gSK5uqcRZfnTtWrDAGVs4kGHrPOlEBwR8UwC4GZhFlKrzzEsujs5f5uuT2Ax16cgQPYr/mOLgs6tI+MYpoZNrpwSuBVF7a9t9SJ+tHJY93XCPl7EhqiNkHhWs0TcRQGKET+F1cu92ZL2y7YTf5xJaUv3v9U4plz/mM84tsZ8HjR8cjja3PFmV5S5faHLSNucK8kCBi1L3QR4NtB093tgweQGgWDzpMS8Vpm2Spq6sIts= tom.hong@tomhongui-MacBookPro.local"
   # tom-key.pem 의 대응 공개키 입니다.
   user_data = <<-EOT

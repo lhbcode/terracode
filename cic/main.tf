@@ -19,12 +19,13 @@ module "keypair" {
 module "vpc" {
   source = "../module/vpc"
 
-  name = "${local.name}-vpc-${random_string.random.id}"
+  name = "${local.name}-vpc"
   cidr = local.cidr
 
   azs            = ["${local.region}a", "${local.region}c"]
   public_subnets = local.public_subnet
   private_subnets = local.private_subnet
+  database_subnets = local.database_subnets
   create_igw           = true
   enable_dhcp_options  = true
   enable_dns_support   = true
@@ -118,6 +119,40 @@ module "ec2_frontend" {
     "kubernetes.io/cluster/tom" = "owned"
   }
 }
+
+module "ec2_back" {
+  source = "../module/ec2-instance"
+
+  name           = "${local.name}-back-${random_string.random.id}"
+  instance_count = 2
+
+  ami           = lookup(var.aws_amis, var.aws_region)
+  instance_type = local.instancetype
+  #user_data     = local.user_data
+
+  key_name             = module.keypair.key_pair_key_name
+  monitoring           = true
+  #iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+
+  vpc_security_group_ids = [module.security_group_ec2.security_group_id]
+
+  subnet_id = module.vpc.private_subnets[2]
+
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = local.root_volume_size
+    },
+  ]
+  tags = {
+    Owner                       = "${local.name}"
+    Environment                 = "dev-back"
+    "kubernetes.io/cluster/tom" = "owned"
+  }
+}
+
+
+
 module "security_group_alb" {
   source = "../module/security-group"
 
@@ -140,6 +175,7 @@ module "security_group_alb2" {
   ingress_rules       = ["https-443-tcp", "all-icmp"]
   egress_rules        = ["all-all"]
 }
+
 
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
